@@ -42,4 +42,6 @@ To steer left, move the **right joystick** toward the **left** direction.
 
 To steer right, move the **right joystick** toward the **right** direction.
 
-![youtube -> car-moving](../images/car-moving.gif)
+[![car-moving.jpg](../images/car-moving.jpg)](https://www.youtube.com/watch?v=SD1wBIz1uDU&feature=youtu.be)
+
+**Figure 2:** Image navigates to video with car moving
