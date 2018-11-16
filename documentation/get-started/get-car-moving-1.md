@@ -15,6 +15,8 @@ You will get the car moving by using ROS and the game controller.
 
 ![usb-bottom-face.jpg](../images/usb-bottom-face.jpg)
 
+**Figure 1:** USB Bottom Face Upward
+
 ## Launch the ROS Program to Activate Car Wheels
 
 Run the following command in an open terminal on Jetson Ubuntu:
