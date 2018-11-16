@@ -31,6 +31,8 @@ The reason for the two commands is that the recording.launch process doesn't sta
 
 > Note: Python script being used to capture and store frames: **[controlRecording.py](https://gitlab.com/saumitra_bg/hdp-pilot/blob/master/hdp_pilot/scripts/controlRecording.py)**
 
+When reading through the python script, you will see the video frames are being saved to the following directory on the Jetson: `/media/nvidia/data/images/`.
+
 ## Record Video Frames of Objects in Front of the Car
 
 While the ROS recording process is running, there is the teleop ROS process running too. Thus, you can control the car's movements while capturing video frames.
@@ -43,9 +45,9 @@ It is important for the car to recognize people, so it knows either to avoid the
 
 Here are two examples of different people:
 
-![video-frame-james.jpg](video-frame-james.jpg)
+![video-frame-james.jpg](../images/video-frame-james.jpg)
 
-![video-frame-christian.jpg](video-frame-christian.jpg)
+![video-frame-christian.jpg](../images/video-frame-christian.jpg)
 
 ## Further Reading
 
