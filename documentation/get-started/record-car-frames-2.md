@@ -45,9 +45,13 @@ It is important for the car to recognize people, so it knows either to avoid the
 
 Here are two examples of different people:
 
+![video-frame-christian.jpeg](../images/video-frame-christian.jpeg)
+
+**Figure 1:** Person 1
+
 ![video-frame-james.jpeg](../images/video-frame-james.jpeg)
 
-![video-frame-christian.jpeg](../images/video-frame-christian.jpeg)
+**Figure 2:** Person 2
 
 ## Further Reading
 
