@@ -19,6 +19,10 @@ roslaunch video_stream_opencv webcam.launch
 
 The above command launches a ROS process to open the video stream of the webcam peripheral to start publishing data.
 
+> Note: the c++ source being executed in the ROS process webcam.launch: **[video_stream.cpp](https://github.com/ros-drivers/video_stream_opencv/blob/master/src/video_stream.cpp)**
+
+> Note: the c++ code location on Jetson: `~/racecar-ws/src/video_stream_opencv/src/video_stream.cpp`
+
 Open second terminal window:
 
 ~~~bash
@@ -29,7 +33,9 @@ The above command launches a ROS process that allows the user to turn on or off 
 
 The reason for the two commands is that the recording.launch process doesn't start the stream. Thus, you need webcam.launch to start the stream. Then run recording.launch
 
-> Note: Python script being used to capture and store frames: **[controlRecording.py](https://gitlab.com/saumitra_bg/hdp-pilot/blob/master/hdp_pilot/scripts/controlRecording.py)**
+> Note: Python script being used in ROS process recording.launch to capture and store frames: **[controlRecording.py](https://gitlab.com/saumitra_bg/hdp-pilot/blob/master/hdp_pilot/scripts/controlRecording.py)**
+
+> Note: the python code location on Jetson: `~/racecar-ws/src/hdp-pilot/hdp_pilot/scripts/controlRecording.py`
 
 When reading through the python script, you will see the video frames are being saved to the following directory on the Jetson: `/media/nvidia/data/images/`.
 
