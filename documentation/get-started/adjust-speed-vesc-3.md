@@ -67,3 +67,7 @@ To steer right, move the **right joystick** toward the **right** direction.
 [![car-moving.jpg](../images/car-moving.jpg)](https://www.youtube.com/watch?v=SD1wBIz1uDU&feature=youtu.be)
 
 **Figure 2:** Image navigates to second video with car moving at various speeds
+
+## Further Reading
+
+- [vesc.yaml](https://github.com/mit-racecar/racecar/blob/master/racecar/config/racecar-v2/vesc.yaml)
