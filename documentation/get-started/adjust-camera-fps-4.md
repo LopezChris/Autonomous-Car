@@ -1,7 +1,7 @@
 # Adjust Frames Per Second using video_stream_opencv
 
 You can increase the frames per second (FPS) to potentially increase the amount
-of images that are captured when the car is recording video. 
+of images that are captured when the car is recording video.
 
 ## Check Video Camera Configurations Currently Applied
 
@@ -88,6 +88,14 @@ query:
 ~~~xml
 <!-- throttling the querying of frames to -->
 <arg name="fps" value="60" />
+~~~
+
+Lets also change the dimensions of the image from default width x height
+**640x480** to **1920x1080**.
+
+~~~xml
+<arg name="width" value="1920"/>
+<arg name="height" value="1080"/>
 ~~~
 
 ## Re-Check Video Camera Configurations That Were Modified
