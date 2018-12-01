@@ -82,3 +82,5 @@ Contribute
 ----------
 * Check for open issues or open a new one to start a discussion around a feature idea or a bug.
 * Fork the repository, makie your changes and send a pull request
+
+Library is built by Jesus Moreno Amor. I will make adaptations as needed.
