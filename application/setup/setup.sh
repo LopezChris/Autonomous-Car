@@ -21,23 +21,6 @@ PATH_TO_LIB_DIR=$HOME/Autonomous-Car/application/lib
 #
 ##
 
-#git clone https://github.com/jmorenoamor/ksh-logger
-# modified above repo for bash
-
-LIB_PATH="../lib"
-LIB_PACKAGE="sh-logger"
-LIB_FILE="logger.sh"
-
-# Load or import the logger library
-. $LIB_PATH/$LIB_PACKAGE/$LIB_FILE
-
-# Set needed configuration for values
-LOG_LEVEL=4
-
-# Path where LOG_FILE will be generated
-LOG_PATH="/var/log/autonomous-car/app/setup/"
-LOG_FILE="setup.log"
-
 # Get current user
 GROUP_NAME="syslog"
 # Add user to syslog group to have write access to /var/log
@@ -45,6 +28,22 @@ echo "Enter sudo password: ";
 read -s PW
 # Change ownership of log folder to current active user
 echo $PW | sudo -S chown $USERNAME:$GROUP_NAME /var/log
+
+#git clone https://github.com/jmorenoamor/ksh-logger
+# modified above repo for bash
+
+LIB_PACKAGE="sh-logger"
+LIB_FILE="logger.sh"
+
+# Load or import the logger library
+. $PATH_TO_LIB_DIR/$LIB_PACKAGE/$LIB_FILE
+
+# Set needed configuration for values
+LOG_LEVEL=4
+
+# Path where LOG_FILE will be generated
+LOG_PATH="/var/log/autonomous-car/app/setup/"
+LOG_FILE="setup.log"
 
 # Init the logger
 logger_init
@@ -105,10 +104,10 @@ source ~/.bashrc
 conda list
 
 # 1.9: Set Up Anaconda Environments
-conda create --name autonomous-car python=3
+conda create -y --name self-car python=3
 
 # Activate new environment
-source activate autonomous-car
+source activate self-car
 
 ##
 #
@@ -141,5 +140,7 @@ pip install --ignore-installed --upgrade seaborn
 #
 ##
 
-mkdir -P $PATH_TO_LIB_DIR/SelfDirvingMaterials
-wget http://media.sundog-soft.com/SelfDriving/SelfDrivingMaterials.zip -O $PATH_TO_LIB_DIR
+LIB_PACKAGE="SelfDrivingMaterials"
+mkdir -p $PATH_TO_LIB_DIR/$LIB_PACKAGE
+wget http://media.sundog-soft.com/SelfDriving/$LIB_PACKAGE.zip -O $PATH_TO_LIB_DIR/$LIB_PACKAGE/$LIB_PACKAGE.zip
+unzip $PATH_TO_LIB_DIR/$LIB_PACKAGE/$LIB_PACKAGE.zip -d $PATH_TO_LIB_DIR/$LIB_PACKAGE

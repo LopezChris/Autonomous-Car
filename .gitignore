@@ -1,2 +1,5 @@
-# Setup log file
-Autonomous-Car/application/setup/setup.log
+# Ignore Setup log file
+setup.log
+
+# Ignore SelfDrivingMaterials folder and its sub folders, files
+SelfDrivingMaterials/
