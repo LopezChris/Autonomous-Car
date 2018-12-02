@@ -9,6 +9,14 @@
 
 ##
 #
+# Variables
+#
+##
+
+PATH_TO_LIB_DIR=$HOME/Autonomous-Car/application/lib
+
+##
+#
 # 0. Import and Initialize bash logger library
 #
 ##
@@ -17,7 +25,7 @@
 # modified above repo for bash
 
 LIB_PATH="../lib"
-LIB_PACKAGE="bash-logger"
+LIB_PACKAGE="sh-logger"
 LIB_FILE="logger.sh"
 
 # Load or import the logger library
@@ -102,3 +110,36 @@ conda create --name autonomous-car python=3
 # Activate new environment
 source activate autonomous-car
 
+##
+#
+# 2. Download and Install OpenCV3 using Anaconda
+#
+##
+
+conda install -y --channel https://conda.anaconda.org/menpo opencv3
+
+##
+#
+# 3. Download and Install Tensorflow using pip
+#
+##
+
+pip install --ignore-installed --upgrade Cython
+pip install --ignore-installed --upgrade tensorflow
+
+##
+#
+# 4. Download and Install seaborn using pip
+#
+##
+
+pip install --ignore-installed --upgrade seaborn
+
+##
+#
+# 5. Download the course materials to the library folder
+#
+##
+
+mkdir -P $PATH_TO_LIB_DIR/SelfDirvingMaterials
+wget http://media.sundog-soft.com/SelfDriving/SelfDrivingMaterials.zip -O $PATH_TO_LIB_DIR
