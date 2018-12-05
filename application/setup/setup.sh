@@ -103,19 +103,15 @@ source ~/.bashrc
 # 1.8: Test Installation
 conda list
 
-# 1.9: Set Up Anaconda Environments
-conda create -y --name self-car python=3
-
-# Activate new environment
-source activate self-car
-
 ##
-#
+# Install packages before starting anaconda environment:
 # 2. Download and Install OpenCV3 using Anaconda
 #
 ##
 
-conda install -y --channel https://conda.anaconda.org/menpo opencv3
+# conda install -y --channel https://conda.anaconda.org/menpo opencv3
+pip install opencv-contrib-python
+
 
 ##
 #
@@ -133,6 +129,13 @@ pip install --ignore-installed --upgrade tensorflow
 ##
 
 pip install --ignore-installed --upgrade seaborn
+
+
+# 1.9: Set Up Anaconda Environments
+conda create -y --name self-car python=3
+
+# Activate new environment
+source activate self-car
 
 ##
 #
