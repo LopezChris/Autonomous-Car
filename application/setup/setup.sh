@@ -110,6 +110,7 @@ conda list
 ##
 
 # conda install -y --channel https://conda.anaconda.org/menpo opencv3
+pip install msgpack
 pip install opencv-contrib-python
 
 
@@ -147,3 +148,5 @@ LIB_PACKAGE="SelfDrivingMaterials"
 mkdir -p $PATH_TO_LIB_DIR/$LIB_PACKAGE
 wget http://media.sundog-soft.com/SelfDriving/$LIB_PACKAGE.zip -O $PATH_TO_LIB_DIR/$LIB_PACKAGE/$LIB_PACKAGE.zip
 unzip $PATH_TO_LIB_DIR/$LIB_PACKAGE/$LIB_PACKAGE.zip -d $PATH_TO_LIB_DIR/$LIB_PACKAGE
+# remove zipped course materials folder
+rm -rf $PATH_TO_LIB_DIR/$LIB_PACKAGE/$LIB_PACKAGE.zip
