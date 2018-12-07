@@ -151,13 +151,34 @@ unzip $PATH_TO_LIB_DIR/$LIB_PACKAGE/$LIB_PACKAGE.zip -d $PATH_TO_LIB_DIR/$LIB_PA
 # remove zipped course materials folder
 rm -rf $PATH_TO_LIB_DIR/$LIB_PACKAGE/$LIB_PACKAGE.zip
 
+##
 #
-# Download and Install Zeppelin
+# Build Zeppelin from Source
 #
+# https://zeppelin.apache.org/docs/0.8.0/setup/basics/how_to_build.html#install-maven
+#
+##
 
-# Download Zeppelin
+# Install Requirements
+echo $PW | sudo -S apt-get update
+echo $PW | sudo -S apt-get install -y git-core
+echo $PW | sudo -S apt-get install -y openjdk-8-jdk
+echo $PW | sudo -S apt-get install -y npm
+echo $PW | sudo -S apt-get install -y libfontconfig
+echo $PW | sudo -S apt-get install -y r-base-dev
+echo $PW | sudo -S apt-get install -y r-cran-evaluate
+
+# Install maven
+mkdir -p $PATH_TO_LIB_DIR/apache-maven/
+wget http://www.eu.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz -O $PATH_TO_LIB_DIR/apache-maven/apache-maven-3.3.9-bin.tar.gz
+echo $PW | sudo -S tar -zxf $PATH_TO_LIB_DIR/apache-maven/apache-maven-3.3.9-bin.tar.gz -C /usr/local/
+echo $PW | sudo -S ln -s /usr/local/apache-maven-3.3.9/bin/mvn /usr/local/bin/mvn
+
+# Build Zeppelin from Source
 mkdir -p $PATH_TO_LIB_DIR/zeppelin-0.8.0
-wget http://www.gtlib.gatech.edu/pub/apache/zeppelin/zeppelin-0.8.0/zeppelin-0.8.0-bin-all.tgz -O $PATH_TO_LIB_DIR/zeppelin-0.8.0/zeppelin-0.8.0-bin-all.tgz
-tar -xvf $PATH_TO_LIB_DIR/zeppelin-0.8.0/zeppelin-0.8.0-bin-all.tgz -C $PATH_TO_LIB_DIR/zeppelin-0.8.0
-rm -rf $PATH_TO_LIB_DIR/zeppelin-0.8.0/zeppelin-0.8.0-bin-all.tgz
+git clone https://github.com/apache/zeppelin.git $PATH_TO_LIB_DIR/zeppelin-0.8.0
+cd $PATH_TO_LIB_DIR/zeppelin-0.8.0
+# Install Zeppelin with all interpreters
+mvn clean package -DskipTests
+
 

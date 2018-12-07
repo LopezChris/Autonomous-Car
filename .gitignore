@@ -3,3 +3,9 @@ setup.log
 
 # Ignore SelfDrivingMaterials folder and its sub folders, files
 SelfDrivingMaterials/
+
+# Ignore apache-maven
+apache-maven/
+
+# Ignore zeppelin-0.8.0
+zeppelin-0.8.0/
