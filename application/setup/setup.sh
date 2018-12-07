@@ -131,13 +131,6 @@ pip install --ignore-installed --upgrade tensorflow
 
 pip install --ignore-installed --upgrade seaborn
 
-
-# 1.9: Set Up Anaconda Environments
-conda create -y --name self-car python=3
-
-# Activate new environment
-source activate self-car
-
 ##
 #
 # 5. Download the course materials to the library folder
@@ -181,4 +174,7 @@ cd $PATH_TO_LIB_DIR/zeppelin-0.8.0
 # Install Zeppelin with all interpreters
 mvn clean package -DskipTests
 
-
+# 1.9: Set Up Anaconda Environments
+conda create -y --name self-car python=3
+# Activate new environment
+source activate self-car
