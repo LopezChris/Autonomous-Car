@@ -150,3 +150,14 @@ wget http://media.sundog-soft.com/SelfDriving/$LIB_PACKAGE.zip -O $PATH_TO_LIB_D
 unzip $PATH_TO_LIB_DIR/$LIB_PACKAGE/$LIB_PACKAGE.zip -d $PATH_TO_LIB_DIR/$LIB_PACKAGE
 # remove zipped course materials folder
 rm -rf $PATH_TO_LIB_DIR/$LIB_PACKAGE/$LIB_PACKAGE.zip
+
+#
+# Download and Install Zeppelin
+#
+
+# Download Zeppelin
+mkdir -p $PATH_TO_LIB_DIR/zeppelin-0.8.0
+wget http://www.gtlib.gatech.edu/pub/apache/zeppelin/zeppelin-0.8.0/zeppelin-0.8.0-bin-all.tgz -O $PATH_TO_LIB_DIR/zeppelin-0.8.0/zeppelin-0.8.0-bin-all.tgz
+tar -xvf $PATH_TO_LIB_DIR/zeppelin-0.8.0/zeppelin-0.8.0-bin-all.tgz -C $PATH_TO_LIB_DIR/zeppelin-0.8.0
+rm -rf $PATH_TO_LIB_DIR/zeppelin-0.8.0/zeppelin-0.8.0-bin-all.tgz
+
