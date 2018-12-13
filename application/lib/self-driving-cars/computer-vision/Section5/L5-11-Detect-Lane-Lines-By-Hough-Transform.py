@@ -112,8 +112,3 @@ plt.imshow(Image_with_lines)
 
 # Display picture of figure with subplot indices
 plt.show()
-
-
-
-
-
