@@ -1,0 +1,5 @@
+<launch>
+        <include file="$(find racecar)/launch/teleop.launch"/>
+        <include file="$(find racecar)/launch/mux.launch"/>
+	<node pkg="hdp_pilot" type="get_sensor_data.py" name="get_car_data" output="screen"/>
+</launch>
