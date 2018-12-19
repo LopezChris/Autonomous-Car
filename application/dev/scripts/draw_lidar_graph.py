@@ -183,7 +183,10 @@ class DrawLidarScan():
         """
         if self.angle_increment > self.angle_min and self.angle_increment < self.angle_max:
             # plot point (X, Z)
-            plt.plot(self.ranges[0], self.angle_increment)
+            plt.plot(self.ranges[0], self.angle_increment, 'ro')
+            plt.xlabel('Ranges [m]')
+            plt.ylabel('Angle Increment [rad]')
+            plt.show()
 
 if __name__=="__main__":
     DrawLidarScan()
