@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import ast
+import matplotlib.pyplot as plt
 
 class DrawLidarScan():
     def __init__(self):
@@ -180,8 +181,9 @@ class DrawLidarScan():
            Will utilize angle_increment on Z-axis within angle_min and angle_max boundary
            Will utilize ranges list on X-axis, so plot points on (X, Z) plane
         """
-        
-
+        if self.angle_increment > self.angle_min and self.angle_increment < self.angle_max:
+            # plot point (X, Z)
+            plt.plot(self.ranges[0], self.angle_increment)
 
 if __name__=="__main__":
     DrawLidarScan()
