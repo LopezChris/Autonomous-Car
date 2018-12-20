@@ -38,7 +38,6 @@ class DrawLidarScan():
         print("Drawing LiDAR Scan")
 
         self.plot_lidar_scan(filtered_ranges)
-        self.show_animated_lidar_scan()
         self.show_lidar_scan_plot()
 
     def extract_lidar_file_data(self):
