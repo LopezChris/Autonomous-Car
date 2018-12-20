@@ -32,7 +32,7 @@ class DrawLidarScan():
 
         print("Drawing LiDAR Scan")
 
-        self.plot_lidar_scan(filtered_ranges)
+        self.show_lidar_scan_plot(filtered_ranges)
 
     def extract_lidar_file_data(self):
         """
@@ -175,27 +175,25 @@ class DrawLidarScan():
         print("lidar_filtered_ranges = %s" %(new_ranges_list))
         return new_ranges_list
 
-    def plot_lidar_scan(self, lidar_scan_ranges):
+    def show_lidar_scan_plot(self, lidar_scan_ranges):
         """
            Draw a graph of the LiDAR scan using the points contained in the ranges list
            Will utilize angle_increment on Z-axis within angle_min and angle_max boundary
            Will utilize ranges list on X-axis, so plot points on (X, Z) plane
         """
-        angle_min_new = self.angle_min + self.angle_max
-        print("angle_min_new = %s" %(angle_min_new))
-        angle_max_new = self.angle_max*2
-        print("angle_max_new = %s" %(angle_max_new))
-        angle_inc_copy = self.angle_increment
+        # Set current start angle of scan to angle_inc scan
+        angle_inc_scan = self.angle_min
         i = 0
         while i < len(lidar_scan_ranges):
-            if angle_inc_copy > angle_min_new and \
-            angle_inc_copy < angle_max_new:
-                # plot points (X, Z)
-                plt.plot(lidar_scan_ranges[i], angle_inc_copy, 'ro')
-                angle_inc_copy += angle_inc_copy
+            if angle_inc_scan >= self.angle_min and \
+            angle_inc_scan < self.angle_max:
+                # plot points (Z, X)
+                plt.plot(angle_inc_scan, lidar_scan_ranges[i], 'ro')
+                angle_inc_scan += self.angle_increment
             i += 1
         plt.xlabel('Angle Increment [rad]')
         plt.ylabel('Ranges [m]')
+        plt.title('RC LiDAR Scan')
         plt.show()
 
 if __name__=="__main__":
