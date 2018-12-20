@@ -181,12 +181,22 @@ class DrawLidarScan():
            Will utilize angle_increment on Z-axis within angle_min and angle_max boundary
            Will utilize ranges list on X-axis, so plot points on (X, Z) plane
         """
-        if self.angle_increment > self.angle_min and self.angle_increment < self.angle_max:
-            # plot point (X, Z)
-            plt.plot(self.ranges[0], self.angle_increment, 'ro')
-            plt.xlabel('Ranges [m]')
-            plt.ylabel('Angle Increment [rad]')
-            plt.show()
+        angle_min_new = self.angle_min + self.angle_max
+        print("angle_min_new = %s" %(angle_min_new))
+        angle_max_new = self.angle_max*2
+        print("angle_max_new = %s" %(angle_max_new))
+        angle_inc_copy = self.angle_increment
+        i = 0
+        while i < len(lidar_scan_ranges):
+            if angle_inc_copy > angle_min_new and \
+            angle_inc_copy < angle_max_new:
+                # plot points (X, Z)
+                plt.plot(lidar_scan_ranges[i], angle_inc_copy, 'ro')
+                angle_inc_copy += angle_inc_copy
+            i += 1
+        plt.xlabel('Angle Increment [rad]')
+        plt.ylabel('Ranges [m]')
+        plt.show()
 
 if __name__=="__main__":
     DrawLidarScan()
