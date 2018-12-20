@@ -1,14 +1,14 @@
 #!/usr/bin/env python
+import os
 import ast
+import time
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
 class DrawLidarScan():
-    def __init__(self):
-        base_dir = "/home/self-driving-car/Autonomous-Car/application/data"
-        sensor_dir = base_dir+"/lidar_scan/"
-
+    def __init__(self, lidar_datafile):
         # LiDAR attributes of the class
-        self.filename = sensor_dir+"lidar-08-38-40.txt"
+        self.filename = lidar_datafile
         # LiDAR data gathered from file stored into string lidar_data list
         self.lidar_data = self.extract_lidar_file_data()
         # LiDAR angle_min extracted from list and converted to float number
@@ -178,8 +178,8 @@ class DrawLidarScan():
     def show_lidar_scan_plot(self, lidar_scan_ranges):
         """
            Draw a graph of the LiDAR scan using the points contained in the ranges list
-           Will utilize angle_increment on Z-axis within angle_min and angle_max boundary
-           Will utilize ranges list on X-axis, so plot points on (X, Z) plane
+           Utilizes angle_increment on Z-axis within angle_min and angle_max boundary
+           Utilizes ranges list on X-axis, so plot points on (Z, X) plane
         """
         # Set current start angle of scan to angle_inc scan
         angle_inc_scan = self.angle_min
@@ -197,5 +197,14 @@ class DrawLidarScan():
         plt.show()
 
 if __name__=="__main__":
-    DrawLidarScan()
+    base_dir = "/home/self-driving-car/Autonomous-Car/application/data"
+    sensor_dir = base_dir+"/lidar_scan/"
+    DrawLidarScan(sensor_dir+"lidar-08-38-40.txt")
+
+#    for filename in os.listdir(sensor_dir):
+#        if filename.endswith(".txt"):
+#            print(os.path.join(sensor_dir, filename))
+#            DrawLidarScan(os.path.join(sensor_dir, filename))
+#        else:
+#            print("filename doesn't end with .txt")
 
