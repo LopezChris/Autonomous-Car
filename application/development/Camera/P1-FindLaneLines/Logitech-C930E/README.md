@@ -18,7 +18,7 @@ In this project, Python with OpenCV was used to detect lane lines in images.  Op
 Contents
 ---
 
-- **[P1.ipynb]()**: project code
+- **[P1.ipynb](https://github.com/james94/Autonomous-Car/blob/master/application/development/Camera/P1-FindLaneLines/Logitech-C930E/P1.ipynb)**: project code
 - **[writeup.md]()**: a brief writeup explaining my lane detection pipeline, shortcomings and potential improvements
 - **README.md**: this file
 - **data_pipeline_images/**: images to show each step of the pipeline process
