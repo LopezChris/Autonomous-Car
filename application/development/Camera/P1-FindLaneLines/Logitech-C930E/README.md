@@ -2,7 +2,11 @@
 
 <img src="test_images_output/line_segments/1547786906080.jpeg" width="480" alt="Combined Image" />
 
-Lane Line Detection Using Line Segments
+Lane Line Detection Using RGB Color and Region Selection (Needs Improvement)
+
+<img src="test_images_output/line_segments/cam_track_leftside.jpeg" width="480" alt="Combined Image" />
+
+Lane Line Detection Using HSV Color and Region Selection and Hough Transform (After Improvement)
 
 Overview
 ---
