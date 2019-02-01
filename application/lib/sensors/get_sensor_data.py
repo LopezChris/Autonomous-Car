@@ -208,31 +208,38 @@ class LogCarSensors():
         """
            Save car's sensor data into csv
         """
+        unique_id = str(uuid.uuid4())
+
         # Saved np_img frame with cam_write_file value
-        cam_raw_file = self.sensor_dir[4] + "cam-" + time.strftime("%H-%M-%S") + "-" + str(uuid.uuid4()) + ".jpeg"
+        cam_filename = "cam-" + time.strftime("%H-%M-%S") + "-" + unique_id + ".jpeg"
+        cam_raw_file = self.sensor_dir[4] + cam_filename
 
         res_saved_file = cv2.imwrite(cam_raw_file, self.camera_raw_np_img)
 
         # Save Raw LiDAR data at filepath
-        lidar_raw_file = self.sensor_dir[0] + "lidar-" + time.strftime("%H-%M-%S") + "-" + str(uuid.uuid4()) + ".txt"
+        lidar_filename = "lidar-" + time.strftime("%H-%M-%S") + "-" + unique_id + ".txt"
+        lidar_raw_file = self.sensor_dir[0] + lidar_filename
 
         with open(lidar_raw_file, "w") as file: # Use file to refer to file object
             file.write(str(self.lidar_raw_data))
 
         # Save Raw Speed data at filepath
-        speed_raw_file = self.sensor_dir[2] + "speed-" + time.strftime("%H-%M-%S") + "-" + str(uuid.uuid4()) + ".txt"
+        speed_filename = "speed-" + time.strftime("%H-%M-%S") + "-" + unique_id + ".txt"
+        speed_raw_file = self.sensor_dir[2] + speed_filename
 
         with open(speed_raw_file, "w") as file:
             file.write(str(self.speed_raw_data))
 
         # Save Raw Steering data at filepath
-        steering_raw_file = self.sensor_dir[3] + "steering-" + time.strftime("%H-%M-%S") + "-" + str(uuid.uuid4()) + ".txt"
+        steering_filename = "steering-" + time.strftime("%H-%M-%S") + "-" + unique_id + ".txt"
+        steering_raw_file = self.sensor_dir[3] + steering_filename
 
         with open(steering_raw_file, "w") as file:
             file.write(str(self.steering_raw_data))
 
         # Save Raw IMU data at filepath
-        imu_raw_file = self.sensor_dir[1] + "imu-" + time.strftime("%H-%M-%S") + "-" + str(uuid.uuid4()) + ".txt"
+        imu_filename = "imu-" + time.strftime("%H-%M-%S") + "-" + unique_id + ".txt"
+        imu_raw_file = self.sensor_dir[1] + imu_filename
 
         with open(imu_raw_file, "w") as file: # Use file to refer to file object
             file.write(str(self.imu_raw_data))
@@ -243,13 +250,15 @@ class LogCarSensors():
         #    rospy.logerr("sensor filepath doesn't exist: %s", sensor_filename)
         #    return  
 
-        self.csv_writer.writerow([cam_raw_file, lidar_raw_file, speed_raw_file,
-                                  steering_raw_file, imu_raw_file])
+        self.csv_writer.writerow([cam_filename, lidar_filename, speed_filename,
+                                  steering_filename, imu_filename])
 
         rospy.logerr("============ Recording All Sensor Data Per Frame =============")
 
 if __name__=="__main__":
-    save_base_dst = "/media/nvidia/6139-3863/log_car_sensors/clockwise_rightside_tracklane"
+    save_base_dst = "/media/nvidia/6139-3863/log_car_sensors/outdoor"
+    #save_base_dst = "/media/nvidia/6139-3863/log_car_sensors/outdoor_garage"
+    #save_base_dst = "/media/nvidia/6139-3863/log_car_sensors/clockwise_rightside_tracklane"
     #save_base_dst = "/media/nvidia/6139-3863/log_car_sensors/counterclockwise_rightside_tracklane"
     #save_base_dst = "/media/nvidia/6139-3863/log_car_sensors/clockwise_leftside_tracklane"
     #save_base_dst = "/media/nvidia/6139-3863/log_car_sensors/counterclockwise_leftside_tracklane"
