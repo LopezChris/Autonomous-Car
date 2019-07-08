@@ -67,17 +67,17 @@ We will use Cloudera Edge Manager (CEM) to build a MiNiFi dataflow in the intera
 
 The CEM events page will open:
 
-![cem-ui-events](./documentation/assets/images/cem-ui-events.jpg)
+![cem-ui-events](documentation/assets/images/cem-ui-events.jpg)
 
 Click on Flow Designer, you can click on the class associated with MiNiFi agent you want to build the dataflow for. 
 
 > Note: Later when MiNiFi C++ agent deployed on separate EC2 instance, the class called **"CSDV"** will appear.
 
-![cem-ui-open-flow](./documentation/assets/images/cem-ui-open-flow.jpg)
+![cem-ui-open-flow](documentation/assets/images/cem-ui-open-flow.jpg)
 
 For now class **something** is clicked. Press open to start building. The canvas opens for building flow for class **something**:
 
-![cem-ui-canvas](./documentation/assets/images/cem-ui-canvas.jpg)
+![cem-ui-canvas](documentation/assets/images/cem-ui-canvas.jpg)
 
 We will build a MiNiFi ETL pipeline to ingest csv and image data.
 
@@ -85,7 +85,7 @@ We will build a MiNiFi ETL pipeline to ingest csv and image data.
 
 Add a **GetFile** processor onto canvas to get csv data:
 
-![getfile-csv-data-p1](./documentation/assets/images/getfile-csv-data-p1.jpg)
+![getfile-csv-data-p1](documentation/assets/images/getfile-csv-data-p1.jpg)
 
 Update processor name to **GetCSVFile**.
 
@@ -101,7 +101,7 @@ Double click on GetFile to configure. Scroll to **Properties**, add the properti
 
 Add a **GetFile** processor onto canvas to get image data:
 
-![getfile-image-data-p2](./documentation/assets/images/getfile-image-data-p2.jpg)
+![getfile-image-data-p2](documentation/assets/images/getfile-image-data-p2.jpg)
 
 Update processor name to **GetImageFiles**.
 
