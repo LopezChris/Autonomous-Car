@@ -148,11 +148,13 @@ For now click class **AWS_agent**. Press open to start building. The canvas open
 
 We will build a MiNiFi ETL pipeline to ingest csv and image data.
 
+### Add a GetFile for CSV Data Ingest
+
 Add a **GetFile** processor onto canvas to get csv data:
 
-![getfile-csv-data-p1](./documentation/assets/images/tutorial1/getfile-csv-data-p1.jpg)
-
 Update processor name to **GetCSVFile**.
+
+![getfile-csv-data-p1](./documentation/assets/images/tutorial1/getfile-csv-data-p1.jpg)
 
 Double click on GetFile to configure. Scroll to **Properties**, add the properties in Table 1 to update GetFile's properties.
 
@@ -164,23 +166,33 @@ Double click on GetFile to configure. Scroll to **Properties**, add the properti
 | `Keep Source File`  | `false`  |
 | `Recurse Subdirectories` | `false` |
 
+### Push CSV Data to Remote NiFi Instance
+
 Add a **Remote Process Group** onto canvas to send csv data to NiFi remote instance:
+
+Add URL NiFi is running on:
 
 | Settings  | Value  |
 |:---|---:|
 | `URL` | `http://<ec2-public-DNS>:8080/nifi/` | 
 
-Connect **GetCSVFile** to Remote Process Group, then add the following configuration:
+Connect **GetCSVFile** to Remote Process Group, then add the NiFi destination input port ID you want to send the csv data:
 
 | Settings  | Value  |
 |:---|---:|
 | `Destination Input Port ID` | `<NiFi-input-port-ID>` | 
 
+> Note: you can find the input port ID by clicking on your input port in the NiFi flow. Make sure you connect to the input port that sends csv data to HDFS.
+
+![push-csv-to-nifi](./documentation/assets/images/tutorial1/push-csv-to-nifi.jpg)
+
+### Add a GetFile for Image Data Ingest
+
 Add a **GetFile** processor onto canvas to get image data:
 
-![getfile-image-data-p2](./documentation/assets/images/tutorial1/getfile-image-data-p2.jpg)
-
 Update processor name to **GetImageFiles**.
+
+![getfile-image-data-p2](./documentation/assets/images/tutorial1/getfile-image-data-p2.jpg)
 
 Double click on GetFile to configure. Scroll to **Properties**, add the properties in Table 2 to update GetFile's properties.
 
@@ -190,6 +202,8 @@ Double click on GetFile to configure. Scroll to **Properties**, add the properti
 |:---|---:|
 | `Input Directory`  | `/tmp/csdv/data/input/racetrack/image/logitech`  |
 | `Keep Source File`  | `false`  |
+
+### Push Image Data to Remote NiFi Instance
 
 Add a **Remote Process Group** onto canvas to send image data to NiFi remote instance:
 
@@ -203,6 +217,26 @@ Connect **GetImageFiles** to Remote Process Group, then add the following config
 |:---|---:|
 | `Destination Input Port ID` | `<NiFi-input-port-ID>` | 
 
+> Note: you can find the input port ID by clicking on your input port in the NiFi flow. Make sure you connect to the input port that sends image data to HDFS.
+
+![push-imgs-to-nifi](./documentation/assets/images/tutorial1/push-imgs-to-nifi.jpg)
+
+### Publish Data Flow to MiNiFi Agent
+
+Click on publish in actions dropdown:
+
+![cem-actions-publish](./documentation/assets/images/tutorial1/cem-actions-publish.jpg)
+
+Make this flow available to all agents associated with **AWS_agent** class, press publish:
+
+![publish-flow](./documentation/assets/images/tutorial1/publish-flow.jpg)
+
+> Note: you can add comment `Sending driving log csv and image data to NiFi`
+
+Result of published successful:
+
+![published-success](./documentation/assets/images/tutorial1/published-success.jpg)
+
 ## Tutorial 2: Collect Car Edge Data into Cloud
 
 We will use Cloudera Flow Manager (CFM) to build a NiFi dataflow in the interactive UI running in the cloud on an aws ec2 instance. This dataflow will be used to extract data from the MiNiFi agent, transform the data for routing csv and image data to HDFS running on another ec2 instance.
@@ -210,6 +244,8 @@ We will use Cloudera Flow Manager (CFM) to build a NiFi dataflow in the interact
 - Cloudera Flow Manager runs on port: `8080/nifi/`
 
 `<cfm-ec2-public-dns>:8080/nifi/`
+
+### Upload Hadoop HDFS Location to NiFi
 
 SSH into EC2 instance running NiFi:
 
@@ -235,11 +271,21 @@ Enter your CDH public host name in these field of core-site.xml:
 
 Save core-site.xml.
 
+### Build NiFi Flow to Load Data into HDFS
+
+### Add Input Port for CSV Data Ingest from MiNiFi Agent
+
 Add an **input port** to extract csv data from MiNiFi:
 
 Update input port name to **AWS_MiNiFi_CSV**.
 
+![input-port-csv](./documentation/assets/images/tutorial2/input-port-csv.jpg)
+
 Take note of **input port ID** under port details since we will need it for CEM UI.
+
+![input-port-csv-id](./documentation/assets/images/tutorial2/input-port-csv-id.jpg)
+
+> Note: if you haven't added inport port id for csv data in your minifi flow, take this id above to your minifi flow.
 
 Add a **PutHDFS** processor onto canvas to store driving log data. Update processor name to **PutCsvHDFS**.
 
