@@ -42,18 +42,75 @@ In this tutorial, you will build an Edge to AI application featuring CDF and CDS
 
 ## Prerequisites
 
-- Deployed MiNiFi C++ agent on AWS EC2 instance or Jetson TX2
+- Deployed MiNiFi C++ agent on AWS EC2 Ubuntu 18.04 instance or Jetson TX2
     - AWS: t2.micro
 - Deployed CEM on AWS EC2 instance
-    - AWS: t3.2xlarge, All traffic - all protocol - all ports - my IP
+    - AWS: CentOS7 - with Updates HVM, t3.2xlarge, All traffic - all protocol - all ports - my IP
 - Deployed CDH with CDSW enabled on AWS EC2 instance
 
 ## Outline
 
+- Tutorial 0: Install MiNiFi C++ on Edge
 - Tutorial 1: Ingest Car Sensor Data on Edge
 - Tutorial 2: Collect Car Edge Data into Cloud
 - Tutorial 3: Train CNN Model in Cloud
 - Tutorial 4: Deploy CNN Model onto Car
+
+## Tutorial 0: Install MiNiFi C++ on Edge
+
+### Option 1: Jetson TX2
+
+
+
+### Option2: EC2 Instance
+
+SSH on to the machine assigned to be the agent:
+
+~~~bash
+ssh -i /path/to/pem_file <os-name>@<public-dns-ipv4>
+~~~
+
+Install MiNiFi C++:
+
+~~~bash
+# MiNiFi C++ for Ubuntu 18.04
+wget http://mirrors.ibiblio.org/apache/nifi/nifi-minifi-cpp/0.6.0/nifi-minifi-cpp-bionic-0.6.0-bin.tar.gz
+
+tar -xvf nifi-minifi-cpp-bionic-0.6.0-bin.tar.gz
+~~~
+
+Open your local terminal, we will transport updated minifi.properties file from our local machine to the ec2 instance:
+
+~~~bash
+scp -i ~/.ssh/jmedel-aws-iam.pem ~/Downloads/minifi.properties ubuntu@<ec2-public-dns>:/home/ubuntu/nifi-minifi-cpp-0.6.0/conf
+~~~
+
+Open your ec2 instance terminal:
+
+~~~bash
+vi $HOME/nifi-minifi-cpp-0.6.0/conf/minifi.properties
+~~~
+
+Enter your public host name in these fields
+
+~~~bash
+nifi.c2.agent.coap.host=<CEM Public DNS>
+
+nifi.c2.flow.base.url=<CEM Public DNS>:10080/efm/api
+
+nifi.c2.rest.url=<CEM Public DNS>:10080/efm/api/c2-protocol/heartbeat
+
+nifi.c2.rest.url.ack=<CEM Public DNS>:10080/efm/api/c2-protocol/acknowledge
+~~~
+
+Turn on agent:
+
+~~~
+cd nifi-minifi-cpp-0.6.0/bin
+./minifi.sh start
+~~~
+
+
 
 ## Tutorial 1: Ingest Car Sensor Data on Edge
 
@@ -71,11 +128,11 @@ The CEM events page will open:
 
 Click on Flow Designer, you can click on the class associated with MiNiFi agent you want to build the dataflow for. 
 
-> Note: Later when MiNiFi C++ agent deployed on separate EC2 instance, the class called **"CSDV"** will appear.
+> Note: Later when MiNiFi C++ agent deployed on separate the Jetson TX2, the class called **"CSDV_agent"** will appear.
 
 ![cem-ui-open-flow](./documentation/assets/images/tutorial1/cem-ui-open-flow.jpg)
 
-For now class **something** is clicked. Press open to start building. The canvas opens for building flow for class **something**:
+For now click class **AWS_agent**. Press open to start building. The canvas opens for building flow for class **AWS_agent**:
 
 ![cem-ui-canvas](./documentation/assets/images/tutorial1/cem-ui-canvas.jpg)
 
