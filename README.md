@@ -82,6 +82,7 @@ tar -xvf nifi-minifi-cpp-bionic-0.6.0-bin.tar.gz
 Open your local terminal, we will transport updated minifi.properties file from our local machine to the ec2 instance:
 
 ~~~bash
+wget -O ~/Downloads/minifi.properties https://raw.githubusercontent.com/james94/Autonomous-Car/master/documentation/assets/services/minifi_cpp/minifi.properties
 scp -i ~/.ssh/jmedel-aws-iam.pem ~/Downloads/minifi.properties ubuntu@<ec2-public-dns>:/home/ubuntu/nifi-minifi-cpp-0.6.0/conf
 ~~~
 
@@ -101,6 +102,12 @@ nifi.c2.flow.base.url=<CEM Public DNS>:10080/efm/api
 nifi.c2.rest.url=<CEM Public DNS>:10080/efm/api/c2-protocol/heartbeat
 
 nifi.c2.rest.url.ack=<CEM Public DNS>:10080/efm/api/c2-protocol/acknowledge
+~~~
+
+Download sample driving log data for MiNiFi:
+
+~~~bash
+wget 
 ~~~
 
 Turn on agent:
@@ -185,13 +192,15 @@ We will use Cloudera Flow Manager (CFM) to build a NiFi dataflow in the interact
 
 We will use Cloudera Distribution Hadoop (CDH) to have access car data in Hadoop - HDFS for when we work in Cloudera Data Science Workbench (CDSW) and train the Keras CNN model. This access to HDFS will also allow us to save the model into HDFS from CDSW. CDSW will be running on the same ec2 instance as CDH and HDFS, but in a docker container.
 
-- Cloudera Data Science Workbench runs at web address: `http://cdsw.<vm-public-IP>.nip.io`
+- Cloudera Data Science Workbench runs at web address:
+
+ `http://cdsw.<vm-public-IP>.nip.io`
 
 `http://cdsw.<cdh-ec2-public-dns>.nip.io`
 
 
 
-## Tutorial 4: Deploy Keras Model to Car via NiFi to MiNiFi
+## Tutorial 4: Deploy Keras Model to Edge
 
 With the model saved in HDFS, we will use NiFi to pull in the model to the dataflow, so it can be transported to the MiNiFi agent running on the edge.
 
