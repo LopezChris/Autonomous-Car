@@ -47,6 +47,7 @@ In this tutorial, you will build an Edge to AI application featuring CDF and CDS
 - Deployed CEM on AWS EC2 instance
     - AWS: CentOS7 - with Updates HVM, t3.2xlarge, All traffic - all protocol - all ports - my IP
 - Deployed CDH with CDSW enabled on AWS EC2 instance
+    - Add private and public DNS of CEM EC2
 
 ## Outline
 
@@ -107,7 +108,11 @@ nifi.c2.rest.url.ack=<CEM Public DNS>:10080/efm/api/c2-protocol/acknowledge
 Download sample driving log data for MiNiFi:
 
 ~~~bash
-wget 
+sudo apt -y install unzip
+mkdir -p /tmp/csdv/data/input/racetrack/
+cd /tmp/csdv/data/input/racetrack/
+wget https://github.com/james94/Autonomous-Car/raw/master/documentation/assets/data/image.tar.gz
+tar -xvf image.tar.gz
 ~~~
 
 Turn on agent:
@@ -116,8 +121,6 @@ Turn on agent:
 cd nifi-minifi-cpp-0.6.0/bin
 ./minifi.sh start
 ~~~
-
-
 
 ## Tutorial 1: Ingest Car Sensor Data on Edge
 
@@ -145,8 +148,6 @@ For now click class **AWS_agent**. Press open to start building. The canvas open
 
 We will build a MiNiFi ETL pipeline to ingest csv and image data.
 
-### Add GetFile for CSV Data Ingest
-
 Add a **GetFile** processor onto canvas to get csv data:
 
 ![getfile-csv-data-p1](./documentation/assets/images/tutorial1/getfile-csv-data-p1.jpg)
@@ -155,13 +156,25 @@ Update processor name to **GetCSVFile**.
 
 Double click on GetFile to configure. Scroll to **Properties**, add the properties in Table 1 to update GetFile's properties.
 
-**Table 1:** Update **GetFile** Properties
+**Table 1:** Update **GetCSVFile** Properties
 
 | Property  | Value  |
 |:---|---:|
-| `Input Directory`  | `/tmp/csdv/data/input/checkpoints/racetrack.chk1/image/`  |
+| `Input Directory`  | `/tmp/csdv/data/input/racetrack/image`  |
 | `Keep Source File`  | `false`  |
 | `Recurse Subdirectories` | `false` |
+
+Add a **Remote Process Group** onto canvas to send csv data to NiFi remote instance:
+
+| Settings  | Value  |
+|:---|---:|
+| `URL` | `http://<ec2-public-DNS>:8080/nifi/` | 
+
+Connect **GetCSVFile** to Remote Process Group, then add the following configuration:
+
+| Settings  | Value  |
+|:---|---:|
+| `Destination Input Port ID` | `<NiFi-input-port-ID>` | 
 
 Add a **GetFile** processor onto canvas to get image data:
 
@@ -175,10 +188,20 @@ Double click on GetFile to configure. Scroll to **Properties**, add the properti
 
 | Property  | Value  |
 |:---|---:|
-| `Input Directory`  | `/tmp/csdv/data/input/checkpoints/racetrack.chk1/image/logitech/`  |
+| `Input Directory`  | `/tmp/csdv/data/input/racetrack/image/logitech`  |
 | `Keep Source File`  | `false`  |
 
+Add a **Remote Process Group** onto canvas to send image data to NiFi remote instance:
 
+| Settings  | Value  |
+|:---|---:|
+| `URL` | `http://<ec2-public-DNS>:8080/nifi/` | 
+
+Connect **GetImageFiles** to Remote Process Group, then add the following configuration:
+
+| Settings  | Value  |
+|:---|---:|
+| `Destination Input Port ID` | `<NiFi-input-port-ID>` | 
 
 ## Tutorial 2: Collect Car Edge Data into Cloud
 
@@ -187,6 +210,60 @@ We will use Cloudera Flow Manager (CFM) to build a NiFi dataflow in the interact
 - Cloudera Flow Manager runs on port: `8080/nifi/`
 
 `<cfm-ec2-public-dns>:8080/nifi/`
+
+SSH into EC2 instance running NiFi:
+
+~~~
+ssh -i /path/to/pem_file <os-name>@<public-dns-ipv4>
+~~~
+
+~~~bash
+# download hdfs core-site.xml
+mkdir -p /tmp/service/hdfs/
+cd /tmp/service/hdfs/
+wget https://raw.githubusercontent.com/james94/Autonomous-Car/master/documentation/assets/services/hadoop_hdfs/core-site.xml
+~~~
+
+Enter your CDH public host name in these field of core-site.xml:
+
+~~~xml
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://{CDH Public DNS}:8020</value>
+  </property>
+~~~
+
+Save core-site.xml.
+
+Add an **input port** to extract csv data from MiNiFi:
+
+Update input port name to **AWS_MiNiFi_CSV**.
+
+Take note of **input port ID** under port details since we will need it for CEM UI.
+
+Add a **PutHDFS** processor onto canvas to store driving log data. Update processor name to **PutCsvHDFS**.
+
+Update the following processor properties:
+
+| Property  | Value  |
+|:---|---:|
+| `Hadoop Configuration Resources` | `/tmp/service/hdfs/core-site.xml` |
+| `Directory`  | `/tmp/csdv/data/input/racetrack/image/`  |
+
+Add an **input port** to extract image data from MiNiFi:
+
+Update input port name to **AWS_MiNiFi_IMG**.
+
+Take note of **input port ID** under port details since we will need it for CEM UI.
+
+Add a **PutHDFS** processor onto canvas to store driving log data. Update processor name to **PutImgHDFS**.
+
+Update the following processor properties:
+
+| Property  | Value  |
+|:---|---:|
+| `Hadoop Configuration Resources` | `/tmp/service/hdfs/core-site.xml` |
+| `Directory`  | `/tmp/csdv/data/input/racetrack/image/logitech`  |
 
 ## Tutorial 3: Train CNN Model in Cloud
 
