@@ -283,9 +283,13 @@ Update input port name to **AWS_MiNiFi_CSV**.
 
 Take note of **input port ID** under port details since we will need it for CEM UI.
 
+### Save CSV Input Port ID for MiNiFi CEM Flow
+
 ![input-port-csv-id](./documentation/assets/images/tutorial2/input-port-csv-id.jpg)
 
 > Note: if you haven't added inport port id for csv data in your minifi flow, take this id above to your minifi flow.
+
+### Connect and Load CSV to HDFS
 
 Add a **PutHDFS** processor onto canvas to store driving log data. Update processor name to **PutCsvHDFS**.
 
@@ -296,11 +300,27 @@ Update the following processor properties:
 | `Hadoop Configuration Resources` | `/tmp/service/hdfs/core-site.xml` |
 | `Directory`  | `/tmp/csdv/data/input/racetrack/image/`  |
 
+Connect the **AWS_MiNiFi_CSV** input port to **PutCsvHDFS** processor:
+
+![connect-csv-to-hdfs](./documentation/assets/images/tutorial2/connect-csv-to-hdfs.jpg)
+
+### Add Input Port for Image Data Ingest from MiNiFi Agent
+
 Add an **input port** to extract image data from MiNiFi:
 
 Update input port name to **AWS_MiNiFi_IMG**.
 
+![input-port-img](./documentation/assets/images/tutorial2/input-port-img.jpg)
+
 Take note of **input port ID** under port details since we will need it for CEM UI.
+
+### Save Image Input Port ID for MiNiFi CEM Flow
+
+![input-port-img-id](./documentation/assets/images/tutorial2/input-port-img-id.jpg)
+
+> Note: if you haven't added inport port id for image data in your minifi flow, take this id above to your minifi flow.
+
+### Connect and Load Images to HDFS
 
 Add a **PutHDFS** processor onto canvas to store driving log data. Update processor name to **PutImgHDFS**.
 
@@ -310,6 +330,24 @@ Update the following processor properties:
 |:---|---:|
 | `Hadoop Configuration Resources` | `/tmp/service/hdfs/core-site.xml` |
 | `Directory`  | `/tmp/csdv/data/input/racetrack/image/logitech`  |
+
+Connect the **AWS_MiNiFi_IMG** input port to **PutImgHDFS** processor:
+
+![connect-img-to-hdfs](./documentation/assets/images/tutorial2/connect-img-to-hdfs.jpg)
+
+### Start NiFi Flow
+
+Highlight all components on NiFi canvas with `ctrl+A` or `cmd+A`, then in the operate panel, press the start button:
+
+![started-nifi-flow](./documentation/assets/images/tutorial2/started-nifi-flow.jpg)
+
+You should see data flowing from NiFi to HDFS as above.
+
+> Note: if you don't see data flowing, go back to the CEM UI, make sure you have your flow connected to this NiFi remote instance. Also make sure MiNiFi Agent is runnining.
+
+Potential error you may see can be ignored:
+
+![puthdfs-error-ignore](./documentation/assets/images/tutorial2/puthdfs-error-ignore.jpg)
 
 ## Tutorial 3: Train CNN Model in Cloud
 
