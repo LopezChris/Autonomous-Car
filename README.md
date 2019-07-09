@@ -324,6 +324,12 @@ Take note of **input port ID** under port details since we will need it for CEM 
 
 Add a **PutHDFS** processor onto canvas to store driving log data. Update processor name to **PutImgHDFS**.
 
+Update the following processor scheduling:
+
+| Scheduling  | Value  |
+|:---|---:|
+| `Concurrent Tasks` | `5` |
+
 Update the following processor properties:
 
 | Property  | Value  |
