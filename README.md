@@ -59,11 +59,7 @@ In this tutorial, you will build an Edge to AI application featuring CDF and CDS
 
 ## Tutorial 0: Install MiNiFi C++ on Edge
 
-### Option 1: Jetson TX2
-
-
-
-### Option2: EC2 Instance
+### EC2 Instance
 
 SSH on to the machine assigned to be the agent:
 
