@@ -104,9 +104,3 @@ Highlight all components on NiFi canvas with `ctrl+A` or `cmd+A`, then in the op
 ![started-nifi-flow](./documentation/assets/images/tutorial2/started-nifi-flow.jpg)
 
 You should see data flowing from NiFi to HDFS as above.
-
-> Note: if you don't see data flowing, go back to the CEM UI, make sure you have your flow connected to this NiFi remote instance. Also make sure MiNiFi Agent is runnining.
-
-Potential error you may see can be ignored:
-
-![puthdfs-error-ignore](./documentation/assets/images/tutorial2/puthdfs-error-ignore.jpg)
