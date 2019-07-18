@@ -104,3 +104,9 @@ Highlight all components on NiFi canvas with `ctrl+A` or `cmd+A`, then in the op
 ![started-nifi-flow](./documentation/assets/images/tutorial2/started-nifi-flow.jpg)
 
 You should see data flowing from NiFi to HDFS as above.
+
+> Note: if you don't see data flowing, go back to the CEM UI, make sure you have your flow connected to this NiFi remote instance. Also make sure MiNiFi Agent is runnining.
+
+Potential error you may see cannot be ignored, it most likely means you have the wrong core-site.xml. You should make sure if you need to do a search for core-site.xml on CDH that it comes from the client, example cdsw-client, and the following error should go away for PutHDFS:
+
+![puthdfs-error-ignore](./documentation/assets/images/tutorial2/puthdfs-error-ignore.jpg)
