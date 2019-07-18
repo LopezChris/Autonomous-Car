@@ -13,17 +13,15 @@ We will use Cloudera Edge Manager (CEM) to build a MiNiFi dataflow in the intera
 
 ## Outline
 
-- Tutorial 1: Ingest Car Sensor Data on Edge
-- Tutorial 2: Collect Car Edge Data into Cloud
-- Tutorial 3: Train CNN Model in Cloud
-- Tutorial 4: Deploy CNN Model onto Car
+- Install MiNiFi C++ on Edge
+- Build Data Flow for MiNiFi via CEM UI
 
 ## Prerequisites
 
 - Deployed MiNiFi C++ agent on AWS EC2 Ubuntu 18.04 instance or Jetson TX2
-    - AWS: t2.micro
+    - AWS: Ubuntu 18.04, t2.large, All traffic - all protocol - all ports - my IP and CEM IP
 - Deployed CEM on AWS EC2 instance
-    - AWS: CentOS7 - with Updates HVM, t3.2xlarge, All traffic - all protocol - all ports - my IP
+    - AWS: CentOS7 - with Updates HVM, t3.2xlarge, All traffic - all protocol - all ports - my IP and CDH IP and MiNiFi IP
 - Deployed CDH with CDSW enabled on AWS EC2 instance
     - Add private and public DNS of CEM EC2
 
@@ -96,7 +94,7 @@ The CEM events page will open:
 
 Click on Flow Designer, you can click on the class associated with MiNiFi agent you want to build the dataflow for. 
 
-> Note: Later when MiNiFi C++ agent deployed on separate the Jetson TX2, the class called **"CSDV_agent"** will appear.
+> Note: Later when MiNiFi C++ agent is deployed on the Jetson TX2, the class called **"CSDV_agent"** will appear.
 
 ![cem-ui-open-flow](./documentation/assets/images/tutorial1/cem-ui-open-flow.jpg)
 
