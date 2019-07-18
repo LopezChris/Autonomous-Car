@@ -2,9 +2,9 @@
 
 ## Intro
 
-Autonomous Car is the Open Source version of Cloudera Self Driving Vehicle. This Driverless miniature car powered by 3D Camera, LiDAR and Game Controller connected to the Jetson TX2 Board. ROS runs on the TX2 and controls the car's movement. Keras can run on the TX2 or run on CDSW in the cloud. Training the CNN can be done on the car or in the cloud. Eventually if we have multiple cars, we could train the model on the car, then send that model to CDSW and perform federated learning. In this tutorial, we send the car data to the Hadoop HDFS in the cloud. We use CDSW to run Keras to train the model, then save the model to HDFS. The model is trained on cloning a person's driving behavior from a racetrack. The model once deployed on the car is able to predict steering angle based on center camera frames, which controls the car using ROS. Once a constant speed is passed to ROS and steering prediction is occuring, we have a driving autonomusly on our track.
+Autonomous Car is the Open Source version of Cloudera Self Driving Vehicle. This Driverless miniature car is powered by 3 Cameras, LiDAR and Logitech Game Controller connected to the Jetson TX2 Board. ROS runs on the TX2 and controls the car's movement. Keras can run on the TX2 or run on CDSW in the cloud. Training the CNN can be done on the car or in the cloud. Eventually if we have multiple cars, we could train the model on the car, then send that model to CDSW and perform federated learning. In this tutorial, we send the car data to the Hadoop HDFS in the cloud. We use CDSW to run Keras to train the model, then save the model to HDFS. The model is trained on cloning a person's driving behavior from a racetrack. The model once deployed on the car is able to predict steering angle based on center camera frames, which controls the car using ROS. Once a constant speed is passed to ROS and steering prediction is occuring, we have a car driving autonomusly on our track.
 
-![mini-car.jpg](documentation/images/mini-car.jpg)
+![james_with_car.jpg](documentation/images/james_with_car.jpg)
 
 ![controller.jpg](documentation/images/controller.jpg)
 
@@ -13,13 +13,13 @@ In this tutorial, you will build an Edge to AI application featuring CDF and CDS
 ## Big Data Technologies used to develop the Application:
 
 - Nvidia Jetson TX2
-    - Apache MiNiFi C++ Agent
+    - [Apache MiNiFi](https://nifi.apache.org/minifi/) C++ Agent
 - CDF
-    - CEM: Interactive UI for building MiNiFi dataflows
-    - CFM: Apache NiFi
+    - [CEM](https://docs.hortonworks.com/HDPDocuments/CEM/CEM-1.0.0/index.html): Interactive UI for building MiNiFi dataflows
+    - CFM: [Apache NiFi](https://nifi.apache.org/)
 - CDH
-    - Apache Hadoop - HDFS
-    - CDSW: IDE for Machine Learning
+    - [Apache Hadoop](https://hadoop.apache.org/) - HDFS
+    - [CDSW](https://www.cloudera.com/products/data-science-and-engineering/data-science-workbench.html): IDE for Machine Learning
 
 ## Learning Objectives
 
