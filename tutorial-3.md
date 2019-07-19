@@ -1,11 +1,18 @@
+# Tutorial 3: AI to the edge
 
-## Tutorial 3: Train CNN Model in Cloud
+We will use Cloudera Data Platform to have access car data in Hadoop - HDFS for when we work in Cloudera Data Science Workbench (CDSW) and train the Keras CNN model. This access to HDFS will also allow us to save the model into HDFS from CDSW. CDSW will be running on the same ec2 instance as CDH and HDFS, but in a docker container.
 
-We will use Cloudera Distribution Hadoop (CDH) to have access car data in Hadoop - HDFS for when we work in Cloudera Data Science Workbench (CDSW) and train the Keras CNN model. This access to HDFS will also allow us to save the model into HDFS from CDSW. CDSW will be running on the same ec2 instance as CDH and HDFS, but in a docker container.
+Download the source code to train the model to your local computer
 
-- Cloudera Data Science Workbench runs at web address:
+~~~bash
+wget https://raw.githubusercontent.com/james94/Autonomous-Car/master/documentation/assets/src/hdfs-train.zip
+~~~
 
- `http://cdsw.<cdh-ec2-public-dns>.nip.io`
+now open an instance of Cloudera Data Science Workbench
+
+- CDSW runs at web address:
+
+ `http://cdsw.<cdp-public-cloud-dns>.nip.io`
 
 Sign in to CDSW and select new project and name it CSDV
 
@@ -36,3 +43,54 @@ enter the following command on the workbench:
 the output should show a few files stored into HDFS. However, if not all of the files you intended to send over are stored into HDFS yet, you should wait because the more data we have the better the model will be.
 
 ![dataflowing](./documentation/assets/images/tutorial3/dataflowing.jpg)
+
+continue to wait until all of the files that were stored on the edge device have been moved to HDFS. Once all of the files have been moved and you have installed all of the dependencies you are ready to begin training
+
+![deps](./documentation/assets/images/tutorial3/deps.jpg)
+
+Now select the `hdfs-model.py` file and select `Run>Run All` your training should look like this
+
+![training](./documentation/assets/images/tutorial3/training.jpg)
+
+for more details about how the training works check out this [blog](link)
+
+### Back to the Edge
+
+Once all of the data that was stored on our "Edge" device is transfered to HDFS we can begin training
+
+Now that you have a model stored on HDFS we can move it back to the edge to complete the cycle. Navigate to NiFi UI and create a new `GetHDFS` processor and connect it to an **output** port
+
+Update the following processor properties:
+
+| Property  | Value  |
+|:---|---:|
+| `Hadoop Configuration Resources` | `/tmp/service/hdfs/core-site.xml` |
+| `Directory`  | `/tmp/csdv/data/output/model/`  |
+
+your NiFi canvas should look like this
+
+![gethdfs](./documentation/assets/images/tutorial3/gethdfs.jpg)
+
+Now navigate to CEM UI and lay out a new RPG
+
+Add URL NiFi is running on:
+
+| Setting  | Value  |
+|:---|---:|
+| `URL` | `http://<nifi-public-DNS>:8080/nifi/` |
+
+connect the RPG to a new `PutFile` processor and name it **GetModel**
+
+Connect the new RPG to the processor, then add the NiFi origin input port ID you want to send the csv data:
+
+| Settings  | Value  |
+|:---|---:|
+| `Source Input Port ID` | `<NiFi-input-port-ID>` |
+
+once you are finished your flow should look like this
+
+![minifiedge](./documentation/assets/images/tutorial3/minifi-edge.jpg)
+
+[Insert image of model back into car]()
+
+## Conclusion
