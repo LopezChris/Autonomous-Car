@@ -1,96 +1,109 @@
-# Tutorial 3: AI to the edge
+# Tutorial 2: Collect Car Edge Data into Cloud
 
-We will use Cloudera Data Platform to have access car data in Hadoop - HDFS for when we work in Cloudera Data Science Workbench (CDSW) and train the Keras CNN model. This access to HDFS will also allow us to save the model into HDFS from CDSW. CDSW will be running on the same ec2 instance as CDH and HDFS, but in a docker container.
+We will use Cloudera Flow Manager (CFM) to build a NiFi dataflow in the interactive UI running in the cloud on an aws ec2 instance. This dataflow will be used to extract data from the MiNiFi agent, transform the data for routing csv and image data to HDFS running on another ec2 instance.
 
-Download the source code to train the model to your local computer
+- Cloudera Flow Manager runs on port: `8080/nifi/`
+
+`<cfm-ec2-public-dns>:8080/nifi/`
+
+### Upload Hadoop HDFS Location to NiFi
+
+SSH into EC2 instance running NiFi:
 
 ~~~bash
-wget https://raw.githubusercontent.com/james94/Autonomous-Car/master/documentation/assets/src/hdfs-train.zip
+ssh -i /path/to/pem_file <os-name>@<public-dns-ipv4>
 ~~~
 
-now open an instance of Cloudera Data Science Workbench
+~~~bash
+# download hdfs core-site.xml
+mkdir -p /tmp/service/hdfs/
+cd /tmp/service/hdfs/
+wget https://raw.githubusercontent.com/james94/Autonomous-Car/master/documentation/assets/services/hadoop_hdfs/core-site.xml
+~~~
 
-- CDSW runs at web address:
+Enter your CDH public host name in these field of core-site.xml:
 
- `http://cdsw.<cdp-public-cloud-dns>.nip.io`
+~~~xml
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://{CDP Public DNS}:8020</value>
+  </property>
+~~~
 
-Sign in to CDSW and select new project and name it CSDV
+Save core-site.xml.
 
-![cdsw-ui](./documentation/assets/images/tutorial3/cdsw-ui.jpg)
+## Build NiFi Flow to Load Data into HDFS
 
-then select a local folder and upload the CSDV project you downloaded earlier:
+### Add Input Port for CSV Data Ingest from MiNiFi Agent
 
-![new-project-cdsw](./documentation/assets/images/tutorial3/new-project-cdsw.jpg)
+We will use the **input port** created on the previous section as an entry point for our flow onto NiFi:
 
-Once the folder uploads to CDSW, open a new workbench:
+![input-port-csv](./documentation/assets/images/tutorial2/input-port-csv.jpg)
 
-![openwb](./documentation/assets/images/tutorial3/openwb.jpg)
+>Note: Take note of **input port ID** under port details since we will need it for CEM UI to connect the MiNiFi processors to the NiFi RPG.
 
-when selecting to open a new workbench ensure that you have an engine configuration with at least 20Gb of RAM or a GPU with 8GB of RAM and Python3
+### Save CSV Input Port ID for MiNiFi CEM Flow
 
-![openwb](./documentation/assets/images/tutorial3/engine.jpg)
+![input-port-csv-id](./documentation/assets/images/tutorial2/input-port-csv-id.jpg)
 
-when you start the session click on the read me file and ensure the packages listed there are running in your CDSW engine
+> Note: if you haven't added inport port id for csv data in your minifi flow, take this id above to your minifi flow.
 
-![rundep](./documentation/assets/images/tutorial3/run-dep.jpg)
+### Connect and Load CSV to HDFS
 
-now we can begin training our model, select the `hdfs-model.py` file on the CDSW file explorer, but before we can run the training script we must ensure that there is data flowing in to HDFS from our CEM cluster
-
-enter the following command on the workbench:
-
-`!hdfs dfs -ls /tmp/csdv/data/input/racetrack/image/logitech`
-
-the output should show a few files stored into HDFS. However, if not all of the files you intended to send over are stored into HDFS yet, you should wait because the more data we have the better the model will be.
-
-![dataflowing](./documentation/assets/images/tutorial3/dataflowing.jpg)
-
-continue to wait until all of the files that were stored on the edge device have been moved to HDFS. Once all of the files have been moved and you have installed all of the dependencies you are ready to begin training
-
-![deps](./documentation/assets/images/tutorial3/deps.jpg)
-
-Now select the `hdfs-model.py` file and select `Run>Run All` your training should look like this
-
-![training](./documentation/assets/images/tutorial3/training.jpg)
-
-for more details about how the training works check out this [blog](link)
-
-### Back to the Edge
-
-Once all of the data that was stored on our "Edge" device is transfered to HDFS we can begin training
-
-Now that you have a model stored on HDFS we can move it back to the edge to complete the cycle. Navigate to NiFi UI and create a new `GetHDFS` processor and connect it to an **output** port
+Add a **PutHDFS** processor onto canvas to store driving log data. Update processor name to **PutCsvHDFS**.
 
 Update the following processor properties:
+
+**Table 5:** update **PutCsvHDFS** Properties
 
 | Property  | Value  |
 |:---|---:|
 | `Hadoop Configuration Resources` | `/tmp/service/hdfs/core-site.xml` |
-| `Directory`  | `/tmp/csdv/data/output/model/`  |
+| `Directory`  | `/tmp/csdv/data/input/racetrack/image/`  |
+| `Recurse Subdirectories`  |  `True`  |
 
-your NiFi canvas should look like this
+Connect the **AWS_MiNiFi_CSV** input port to **PutCsvHDFS** processor:
 
-![gethdfs](./documentation/assets/images/tutorial3/gethdfs.jpg)
+![connect-csv-to-hdfs](./documentation/assets/images/tutorial2/connect-csv-to-hdfs.jpg)
 
-Now navigate to CEM UI and lay out a new RPG
+### Add Input Port for Image Data Ingest from MiNiFi Agent
 
-Add URL NiFi is running on:
+If you haven't already Add an **input port** to extract image data from MiNiFi:
 
-| Setting  | Value  |
+![input-port-img](./documentation/assets/images/tutorial2/input-port-img.jpg)
+
+Take note of **input port ID** under port details since we will need it for CEM UI.
+
+### Save Image Input Port ID for MiNiFi CEM Flow
+
+![input-port-img-id](./documentation/assets/images/tutorial2/input-port-img-id.jpg)
+
+> Note: if you haven't added inport port id for image data in your minifi flow, take this id above to your minifi flow.
+
+### Connect and Load Images to HDFS
+
+Add a **PutHDFS** processor onto canvas to store driving log data. Update processor name to **PutImgHDFS**.
+
+**Table 6:** Update the following processor properties:
+
+| Property  | Value  |
 |:---|---:|
-| `URL` | `http://<nifi-public-DNS>:8080/nifi/` |
+| `Hadoop Configuration Resources` | `/tmp/service/hdfs/core-site.xml` |
+| `Directory`  | `/tmp/csdv/data/input/racetrack/image/logitech`  |
 
-connect the RPG to a new `PutFile` processor and name it **GetModel**
+Connect the **AWS_MiNiFi_IMG** input port to **PutImgHDFS** processor:
 
-Connect the new RPG to the processor, then add the NiFi origin input port ID you want to send the csv data:
+![connect-img-to-hdfs](./documentation/assets/images/tutorial2/connect-img-to-hdfs.jpg)
 
-| Settings  | Value  |
-|:---|---:|
-| `Source Input Port ID` | `<NiFi-input-port-ID>` |
+### Start NiFi Flow
 
-once you are finished your flow should look like this
+Highlight all components on NiFi canvas with `ctrl+A` or `cmd+A`, then in the operate panel, press the start button:
 
-![minifiedge](./documentation/assets/images/tutorial3/minifi-edge.jpg)
+![started-nifi-flow](./documentation/assets/images/tutorial2/started-nifi-flow.jpg)
 
-[Insert image of model back into car]()
+You should see data flowing from NiFi to HDFS as above.
 
-## Conclusion
+> Note: if you don't see data flowing, go back to the CEM UI, make sure you have your flow connected to this NiFi remote instance. Also make sure MiNiFi Agent is runnining.
+Potential error you may see cannot be ignored, it most likely means you have the wrong core-site.xml. You should make sure if you need to do a search for core-site.xml on CDH that it comes from the client, example cdsw-client, and the following error should go away for PutHDFS:
+
+![puthdfs-error-ignore](./documentation/assets/images/tutorial2/puthdfs-error-ignore.jpg)
