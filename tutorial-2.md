@@ -28,78 +28,20 @@ We will use Cloudera Edge Manager (CEM) to build a MiNiFi dataflow in the intera
 ## Prerequisites
 
 - Deployed MiNiFi C++ agent on AWS EC2 Ubuntu 18.04 instance or Jetson TX2
-    - AWS: t2.micro or similar minimum
+  - AWS: t2.micro or similar minimum
 - Deployed CEM on a Cloudera DataFlow cluster
 - Deployed a CDP Cluster with CDSW
 
-## Install MiNiFi C++ on Edge
+## Build Data Flow for MiNiFi via CEM UI
 
-### EC2 Instance
-
-SSH on to the machine assigned to be the agent:
-
-~~~bash
-ssh -i /path/to/pem_file <os-name>@<public-dns-ipv4>
-~~~
-
-Install MiNiFi C++:
-
-~~~bash
-# MiNiFi C++ for Ubuntu 18.04
-wget http://mirrors.ibiblio.org/apache/nifi/nifi-minifi-cpp/0.6.0/nifi-minifi-cpp-bionic-0.6.0-bin.tar.gz
-
-tar -xvf nifi-minifi-cpp-bionic-0.6.0-bin.tar.gz
-~~~
-
-Open your local terminal, we will transport updated minifi.properties file from our local machine to the ec2 instance:
+To begin you will need to change your MiNiFi configurations, if you are working with a new MiNiFi Agent copy these configuration files
 
 ~~~bash
 wget -O ~/Downloads/minifi.properties https://raw.githubusercontent.com/james94/Autonomous-Car/master/documentation/assets/services/minifi_cpp/minifi.properties
 scp -i /path/tp/pem ~/Downloads/minifi.properties <os-name>@<ec2-public-dns>:/home/ubuntu/nifi-minifi-cpp-0.6.0/conf
 ~~~
 
-Now switch to your cloud VM instance terminal
-
-~~~bash
-vi $HOME/nifi-minifi-cpp-0.6.0/conf/minifi.properties
-~~~
-
-Enter your CEM public host name in these fields:
-
-> Note: You will need to configure your security settings here too
-
-~~~bash
-nifi.c2.agent.coap.host=<CEM Public DNS>
-
-nifi.c2.flow.base.url=<CEM Public DNS>:10080/efm/api
-
-nifi.c2.rest.url=<CEM Public DNS>:10080/efm/api/c2-protocol/heartbeat
-
-nifi.c2.rest.url.ack=<CEM Public DNS>:10080/efm/api/c2-protocol/acknowledge
-~~~
-
-Download sample driving log data for MiNiFi on your cloud VM:
-
-~~~bash
-sudo apt -y install unzip
-mkdir -p /tmp/csdv/data/input/racetrack/
-cd /tmp/csdv/data/input/racetrack/
-wget https://github.com/james94/Autonomous-Car/raw/master/documentation/assets/data/image.tar.gz
-tar -xvf image.tar.gz
-~~~
-
-Turn on agent:
-
-~~~bash
-cd nifi-minifi-cpp-0.6.0/bin
-./minifi.sh start
-~~~
-
-At this point your MiNiFi agent is running and ready to being streaming data once you publish a flow on the CEM UI
-
-## Build Data Flow for MiNiFi via CEM UI
-
-Now open your CEM UI, if your `minifi.properties` configuration file is setup correctly you will find that your agent is sending heartbeats to the monitor events section of CEM UI
+Open your CEM UI at `<cloud-vm-public-dns:10080/efm>`, if your `minifi.properties` configuration file is setup correctly you will find that your agent is sending heartbeats to the monitor events section of CEM UI
 
 ![cem-ui-events](./documentation/assets/images/tutorial1/cem-ui-events.jpg)
 
