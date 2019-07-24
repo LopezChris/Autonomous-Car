@@ -22,7 +22,6 @@ Autonomous Car is the Open Source version of Cloudera Self Driving Vehicle. This
 
 ## Outline
 
-- [Tutorial 1: Ingest Car Sensor Data on Edge]()
-- [Tutorial 2: Collect Car Edge Data into Cloud]()
-- [Tutorial 3: Train CNN Model in Cloud]()
-- [Tutorial 4: Deploy CNN Model onto Car]()
+- [Tutorial 1: Ingest Car Sensor Data on Edge](https://github.com/james94/Autonomous-Car/blob/master/tutorial-2.md)
+- [Tutorial 2: Collect Car Edge Data into Cloud](https://github.com/james94/Autonomous-Car/blob/master/tutorial-3.md)
+- [Tutorial 3: AI to Edge](https://github.com/james94/Autonomous-Car/blob/master/tutorial-4.md)
