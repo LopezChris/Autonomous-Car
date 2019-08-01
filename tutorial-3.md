@@ -59,7 +59,7 @@ Update the following processor properties:
 | Property  | Value  |
 |:---|---:|
 | `Hadoop Configuration Resources` | `/tmp/service/hdfs/core-site.xml` |
-| `Directory`  | `/tmp/csdv/data/input/racetrack/image/`  |
+| `Directory`  | `/tmp/data/input/racetrack/image/`  |
 | `Recurse Subdirectories`  |  `True`  |
 
 Connect the **AWS_MiNiFi_CSV** input port to **PutCsvHDFS** processor:
@@ -89,7 +89,7 @@ Add a **PutHDFS** processor onto canvas to store driving log data. Update proces
 | Property  | Value  |
 |:---|---:|
 | `Hadoop Configuration Resources` | `/tmp/service/hdfs/core-site.xml` |
-| `Directory`  | `/tmp/csdv/data/input/racetrack/image/logitech`  |
+| `Directory`  | `/tmp/data/input/racetrack/image/logitech`  |
 
 Connect the **AWS_MiNiFi_IMG** input port to **PutImgHDFS** processor:
 

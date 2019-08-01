@@ -77,7 +77,6 @@ Double click on GetFile to configure. Scroll to **Properties**, add the properti
 |:---|---:|
 | `Input Directory`  | `/tmp/csdv/data/input/racetrack/image`  |
 | `Keep Source File`  | `false`  |
-| `Recurse Subdirectories` | `false` |
 
 ### Push CSV Data to Remote NiFi Instance
 
