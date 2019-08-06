@@ -1,11 +1,11 @@
 # Tutorial 3: AI to the edge
 
-We will use Cloudera Data Platform to have access car data in Hadoop - HDFS for when we work in Cloudera Data Science Workbench (CDSW) and train the Keras CNN model. This access to HDFS will also allow us to save the model into HDFS from CDSW. CDSW will be running on the same ec2 instance as CDH and HDFS, but in a docker container.
+We will use Cloudera Data Platform to have access car data in Hadoop - HDFS for when we work in Cloudera Data Science Workbench (CDSW) and train the Keras CNN model. This access to HDFS will also allow us to save the model into HDFS from CDSW. CDSW will be running on the same ec2 instance as CDH and HDFS, but in its own docker container, [read more about CDSW and how it works](intro-to-cdsw).
 
 Download the source code to train the model to your local computer
 
 ~~~bash
-wget https://raw.githubusercontent.com/james94/Autonomous-Car/master/documentation/assets/src/hdfs-train.zip
+wget -O $HOME/hdfs-train.zip https://raw.githubusercontent.com/gdeleon5/Autonomous-Car/master/documentation/assets/src/hdfs-train.zip && unzip $HOME/hdfs-train.zip -d $HOME
 ~~~
 
 now open an instance of Cloudera Data Science Workbench
@@ -26,7 +26,9 @@ Once the folder uploads to CDSW, open a new workbench:
 
 ![openwb](./documentation/assets/images/tutorial3/openwb.jpg)
 
-when selecting to open a new workbench ensure that you have an engine configuration with at least 20Gb of RAM or a GPU with 8GB of RAM and Python3
+when selecting to open a new workbench
+
+>Note: that this model is light enough to be trained with a 4 vCPUs and 8GB of RAM
 
 ![openwb](./documentation/assets/images/tutorial3/engine.jpg)
 
@@ -54,7 +56,9 @@ Now select the `hdfs-model.py` file and select `Run>Run All` your training shoul
 
 for more details about how the training works check out this [blog](link)
 
-### Back to the Edge
+## Back to the Edge
+
+### NiFi Setup
 
 Now that you have a model stored on HDFS we can move it back to the edge to complete the cycle. Navigate to NiFi UI and create a new `GetHDFS` processor and connect it to an **output** port
 
@@ -63,28 +67,29 @@ Update the following processor properties:
 **Table 7:** Update **GetHDFS** Properties
 
 | Property  | Value  |
-|:---|---:|
+|:---|:---|
 | `Hadoop Configuration Resources` | `/tmp/service/hdfs/core-site.xml` |
-| `Directory`  | `/tmp/data/input/racetrack/image/`  |
+| `Directory`  | `/tmp/csdv/output/`  |
 | `Recurse Subdirectories`  |  `false`  |
-
+| `Keep Source File` | `True` |
 your NiFi canvas should look like this
 
 ![gethdfs](./documentation/assets/images/tutorial3/gethdfs.jpg)
 
-Now navigate to CEM UI and lay out a new RPG
+### CEM Setup
 
-Add URL NiFi is running on:
+Now navigate to CEM UI and drop a new `UpdateAttribute` processor and add the following properties
 
-**Table 8:** Add new RPG for NiFi's Output Port
+**Table 8:** Properties for UpdateAttribute processor
 
-| Setting  | Value  |
-|:---|---:|
-| `URL` | `http://<nifi-public-DNS>:8080/nifi/` |
+| Porperty  | Value  |
+|:---|:---|
+|`Processor Name`|`Change Attribute Name`|
+|`filename` | `model.h5` |
+|`Scheduling Strategy`| `Event Driven`|
+|`Concurrent Tasks`| `1`|
 
-connect the RPG to a new `PutFile` processor and name it **GetModel**
-
-Connect the new RPG to the processor, then add the NiFi origin input port ID you want to send the csv data:
+Connect the RPG to `Change Attribute Name`, then add the NiFi origin input port ID you want to send the csv data:
 
 **Table 9:** Add **Output Port ID** for RPG connection
 
@@ -92,19 +97,25 @@ Connect the new RPG to the processor, then add the NiFi origin input port ID you
 |:---|---:|
 | `Source Output Port ID` | `<NiFi-Output-port-ID>` |
 
+Your canvas should now look similar to this:
+
+![add-update-attribute](./documentation/assets/images/tutorial3/add-update-attribute.jpg)
+
+Now drop a new `PutFile` processor onto the canvas and name it **Save Model** then enter these properties:
+
+**Table 9:** Properties for PutFile processor
+
+| Porperty  | Value  |
+|:---|:---|
+|`Processor Name` | `Save Model` |
+|`Create Missing Directories`|`True`|
+| `Directory`  | `/tmp/fromHDFS/model/` |
+
+Connect `Change Attribute Name` to `Save Model`, then add the NiFi origin input port ID you want to send the csv data:
+
 once you are finished your flow should look like this
 
 ![minifiedge](./documentation/assets/images/tutorial3/minifi-edge.jpg)
-
-now right click oin the `GetModel` processor and select **configure**
-
-**Table 10:** Update **GetModel** Properties
-
-| Property  | Value  |
-|:---|---:|
-| `Directory`  | `/tmp/fromHDFS/model/`  |
-| `Keep Source File`  | `false`  |
-| `Create Missing Directories`  |  `true`  |
 
 Next select **Action** and publish the MiNiFi flow. Finally, open the NiFi UI and start the processors to begin the flow of the model back into the edge device.
 

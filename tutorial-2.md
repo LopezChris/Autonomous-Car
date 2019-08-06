@@ -11,10 +11,6 @@ The clip below is an example of CSDV driving autonomously around it's racetrack
 
 ![autonomous](./documentation/assets/images/tutorial1/autonomous.gif)
 
-In this tutorial you will simulate having our Smart Car by using a cloud VM--we instruct you to use AWS but feel free to use your favorite public cloud provider--which will serve as the MiNiFi agent.
-
-![overview](./documentation/assets/images/tutorial1/overview.jpg)
-
 ## Introduction
 
 The variety of edge devices--whether it be IoT devices, Cloud VMs, or even containers--generating data in today's industry continues to diversify and can lead to data being lost. There is a need to author flows across all variety of edge devices running across an organization; further, there is a need to monitor the published across all devices without writing customized applications for all the different types of devices. CEM provides you with an interface to author flows and monitor them with ease. CEM is made up of a few components, namely Edge Flow Manager (EFM), and MiNifi. EFM provides you with a familiar user interface, similar to NiFi's, while MiNifi is used as the tool which helps you retrieve data from hard to reach places.
@@ -23,31 +19,73 @@ CEM also allows you to granularly deploy models to every different type of devic
 
 ![pub-flow](./documentation/assets/images/tutorial1/pub-flow.png)
 
-We will use Cloudera Edge Manager (CEM) to build a MiNiFi dataflow in the interactive UI and publish it to the MiNiFi agent running on the edge. This dataflow will ingest the car sensor data coming from ROS and push it to NiFi running in the cloud.
-
 ## Prerequisites
 
-- Deployed MiNiFi C++ agent on AWS EC2 Ubuntu 18.04 instance or Jetson TX2
-  - AWS: t2.micro or similar minimum
+- Deployed MiNiFi C++ agent on AWS EC2 Ubuntu 18.04 instance
+  - AWS: t2.micro or similar as a minimum
 - Deployed CEM on a Cloudera DataFlow cluster
-- Deployed a CDP Cluster with CDSW
+- Deployed a CDH Cluster with CDSW
+
+## Concepts
+
+We will use Cloudera Edge Manager (CEM) to build a MiNiFi dataflow in the interactive UI and publish it to the MiNiFi agent running on the edge. This dataflow will ingest the car sensor data coming from ROS and push it to NiFi running in the cloud. In this tutorial you will simulate having our Smart Car by using a cloud VM--we instruct you to use AWS but feel free to use your favorite public cloud provider--which will serve as the MiNiFi agent.
+
+To build out this pipeline we used three Virtual Machines in AWS
+
+| Name | Service used  | Size  | OS |
+|:---|:---|:---|:---|
+|Edge-Smart Car|MiNiFi|t2.micro| Ubuntu 18.04 |
+|Cloudera DataFlow|CEM|m5.2xlarge|Centos 7|
+|Cloudera Data Platform|HDFS + CDSW|m5.4xlarge|Centos 7|
+
+![overview](./documentation/assets/images/tutorial1/overview.jpg)
 
 ## Build Data Flow for MiNiFi via CEM UI
 
-To begin you will need to change your MiNiFi configurations, if you are working with a new MiNiFi Agent copy these configuration files
+To begin you will need the training data on the MiNiFi agent instance, ssh onto that instance as download the data
 
 ~~~bash
-wget -O ~/Downloads/minifi.properties https://raw.githubusercontent.com/james94/Autonomous-Car/master/documentation/assets/services/minifi_cpp/minifi.properties
+mkdir -p /tmp/csdv/data/input/racetrack/image/ && wget -O /tmp/csdv/data/input/racetrack/image/image.tar.gz https://github.com/gdeleon5/Autonomous-Car/blob/master/documentation/assets/data/image.tar.gz
+
+tar -xvzf /tmp/csdv/data/input/racetrack/image/image.tar.gz
+~~~
+
+to change your MiNiFi configurations, if you are working with a new MiNiFi Agent copy these configuration by downloading them directly to the machine running MiNiFi
+
+~~~bash
+wget -O /home/ubuntu/nifi-minifi-cpp-0.6.0/conf/minifi.properties https://raw.githubusercontent.com/gdeleon5/Autonomous-Car/master/documentation/assets/services/minifi_cpp/minifi.properties
+~~~
+
+or by downloading them onto your local computer and sending them to the agent
+
+~~~bash
+wget -O ~/Downloads/minifi.properties https://raw.githubusercontent.com/gdeleon5/Autonomous-Car/master/documentation/assets/services/minifi_cpp/minifi.properties
+
 scp -i /path/tp/pem ~/Downloads/minifi.properties <os-name>@<ec2-public-dns>:/home/ubuntu/nifi-minifi-cpp-0.6.0/conf
 ~~~
 
-Open your CEM UI at `<cloud-vm-public-dns:10080/efm>`, if your `minifi.properties` configuration file is setup correctly you will find that your agent is sending heartbeats to the monitor events section of CEM UI
+Edit the following properties of the minifi.properties file:
+
+**Table 0:** Update **minifi.properties**
+
+| Property  | Value  |
+|:---|:---|
+| `nifi.c2.agent.coap.host`  | `cem-public-dns`  |
+| `nifi.c2.flow.base.url`  | `http://cem-public-dns:10080/efm/api`  |
+| `nifi.c2.rest.url`  | `http://cem-public-dns:10080/efm/api/c2-protocol/heartbeat`  |
+| `nifi.c2.rest.url.ack`  | `http://cem-public-dns:10080/efm/api/c2-protocol/acknowledge`  |
+| `nifi.c2.agent.class` | `AWS_agent` |
+| `nifi.c2.agent.identifier`|`AWS_AGENT_001`|
+
+Open your CEM UI at `<cem-public-dns:10080/efm>`, if your `minifi.properties` configuration file is setup correctly you will find that your agent is sending heartbeats to the monitor events section of CEM UI
 
 ![cem-ui-events](./documentation/assets/images/tutorial1/cem-ui-events.jpg)
 
 Now we know that our Agent can communicate with CEM, that is great news. In order to connect MiNiFi to NiFi we need to know where we are going so let's create a path for our data to slowly build a flow. Open NiFi UI on your CDF cluster and create a new input source named `AWS_MiNiFi_CSV` leave it alone for now, we will need the input id to set our connection from MiNiFi processor to NiFi Remote Process Group (RPG)
 
 ![input-port-csv](./documentation/assets/images/tutorial2/input-port-csv.jpg)
+
+![input-port-id](./documentation/assets/images/tutorial2/input-port-id.jpg)
 
 That is all we need to do on NiFi for now. Navigate to the Flow Designer on CEM UI, you can click on the class associated with MiNiFi agent you want to build the dataflow for, note that we named our agent `AWS_AGENT_001` and our class `AWS_AGENT`
 
@@ -74,9 +112,10 @@ Double click on GetFile to configure. Scroll to **Properties**, add the properti
 **Table 1:** Update **GetCSVFile** Properties
 
 | Property  | Value  |
-|:---|---:|
+|:---|:---|
 | `Input Directory`  | `/tmp/csdv/data/input/racetrack/image`  |
 | `Keep Source File`  | `false`  |
+| `Batch Size`      | `1` |
 
 ### Push CSV Data to Remote NiFi Instance
 
@@ -115,6 +154,7 @@ Double click on GetFile to configure. Scroll to **Properties**, add the properti
 |:---|---:|
 | `Input Directory`  | `/tmp/csdv/data/input/racetrack/image/logitech`  |
 | `Keep Source File`  | `false`  |
+| `Batch Size`      | `10` |
 
 ### Push Image Data to Remote NiFi Instance
 

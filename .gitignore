@@ -7,5 +7,8 @@ SelfDrivingMaterials/
 # Ignore apache-maven
 apache-maven/
 
+# Ignore MacOS store
+ *.DS_Store
+
 # Ignore zeppelin-0.8.0
 zeppelin-0.8.0/

@@ -1,10 +1,10 @@
 # Tutorial 2: Collect Car Edge Data into Cloud
 
-We will use Cloudera Flow Manager (CFM) to build a NiFi dataflow in the interactive UI running in the cloud on an aws ec2 instance. This dataflow will be used to extract data from the MiNiFi agent, transform the data for routing csv and image data to HDFS running on another ec2 instance.
+We will use Cloudera Edge Manager (CEM) to build a NiFi dataflow in the interactive UI running in the cloud on an aws ec2 instance. This dataflow will be used to extract data from the MiNiFi agent, transform the data for routing csv and image data to HDFS running on another ec2 instance.
 
 - Cloudera Flow Manager runs on port: `8080/nifi/`
 
-`<cfm-ec2-public-dns>:8080/nifi/`
+`<cem-ec2-public-dns>:8080/nifi/`
 
 ### Upload Hadoop HDFS Location to NiFi
 
@@ -18,7 +18,7 @@ ssh -i /path/to/pem_file <os-name>@<public-dns-ipv4>
 # download hdfs core-site.xml
 mkdir -p /tmp/service/hdfs/
 cd /tmp/service/hdfs/
-wget https://raw.githubusercontent.com/james94/Autonomous-Car/master/documentation/assets/services/hadoop_hdfs/core-site.xml
+wget https://raw.githubusercontent.com/gdeleon5/Autonomous-Car/master/documentation/assets/services/hadoop_hdfs/core-site.xml
 ~~~
 
 Enter your CDH public host name in these field of core-site.xml:
@@ -60,7 +60,6 @@ Update the following processor properties:
 |:---|---:|
 | `Hadoop Configuration Resources` | `/tmp/service/hdfs/core-site.xml` |
 | `Directory`  | `/tmp/data/input/racetrack/image/`  |
-| `Recurse Subdirectories`  |  `True`  |
 
 Connect the **AWS_MiNiFi_CSV** input port to **PutCsvHDFS** processor:
 

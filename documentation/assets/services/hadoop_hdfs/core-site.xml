@@ -4,7 +4,7 @@
 <configuration>
   <property>
     <name>fs.defaultFS</name>
-    <value>hdfs://ip-172-31-8-131.us-west-1.compute.internal:8020</value>
+    <value>hdfs://<your private ip here>:8020</value>
   </property>
   <property>
     <name>fs.trash.interval</name>
