@@ -70,14 +70,14 @@ Edit the following properties of the minifi.properties file:
 
 | Property  | Value  |
 |:---|:---|
-| `nifi.c2.agent.coap.host`  | `cem-public-dns`  |
-| `nifi.c2.flow.base.url`  | `http://cem-public-dns:10080/efm/api`  |
-| `nifi.c2.rest.url`  | `http://cem-public-dns:10080/efm/api/c2-protocol/heartbeat`  |
-| `nifi.c2.rest.url.ack`  | `http://cem-public-dns:10080/efm/api/c2-protocol/acknowledge`  |
+| `nifi.c2.agent.coap.host`  | `cem-public-DNS`  |
+| `nifi.c2.flow.base.url`  | `http://cem-public-DNS:10080/efm/api`  |
+| `nifi.c2.rest.url`  | `http://cem-public-DNS:10080/efm/api/c2-protocol/heartbeat`  |
+| `nifi.c2.rest.url.ack`  | `http://cem-public-DNS:10080/efm/api/c2-protocol/acknowledge`  |
 | `nifi.c2.agent.class` | `AWS_agent` |
 | `nifi.c2.agent.identifier`|`AWS_AGENT_001`|
 
-Open your CEM UI at `<cem-public-dns:10080/efm>`, if your `minifi.properties` configuration file is setup correctly you will find that your agent is sending heartbeats to the monitor events section of CEM UI
+Open your CEM UI at `<cem-public-DNS:10080/efm>`, if your `minifi.properties` configuration file is setup correctly you will find that your agent is sending heartbeats to the monitor events section of CEM UI
 
 ![cem-ui-events](./documentation/assets/images/tutorial1/cem-ui-events.jpg)
 
@@ -162,13 +162,13 @@ Double click on GetFile to configure. Scroll to **Properties**, add the properti
 
 | Settings  | Value  |
 |:---|---:|
-| `URL` | `http://<ec2-public-DNS>:8080/nifi/` | 
+| `URL` | `http://<cem-public-DNS>:8080/nifi/` |
 
 **Table 4:** Connect **GetImageFiles** to Remote Process Group, then add the following configuration:
 
 | Settings  | Value  |
 |:---|---:|
-| `Destination Input Port ID` | `<NiFi-input-port-ID>` | 
+| `Destination Input Port ID` | `<NiFi-input-port-ID>` |
 
 > Note: you can find the input port ID by clicking on your input port in the NiFi flow. Make sure you connect to the input port that sends image data to HDFS.
 
